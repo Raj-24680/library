@@ -27,6 +27,9 @@ public class LibrarySeleniumTest {
 
         Thread.sleep(2000);
 
+        // handle login alert popup
+        driver.switchTo().alert().accept();
+
         // open main page manually if redirect not handled
         driver.get("http://localhost:8081/index.html");
 
