@@ -26,3 +26,11 @@ This project is a Library Management System developed using Spring Boot.
 
 ```bash
 mvn spring-boot:run
+Open:http://localhost:8081
+
+API Testing
+ Use Postman:
+ GET /books
+ POST /books
+ PUT /books/{id}
+ DELETE /books/{id}
