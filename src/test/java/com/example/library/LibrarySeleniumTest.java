@@ -6,6 +6,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.springframework.boot.test.context.SpringBootTest;
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 
 public class LibrarySeleniumTest {
 
@@ -16,7 +18,7 @@ public class LibrarySeleniumTest {
         WebDriver driver = new ChromeDriver();
 
         // open login page
-        driver.get("http://localhost:8081/login.html");
+        driver.get("http://localhost:8081");
 
         // enter login details
         driver.findElement(By.id("name")).sendKeys("Rahul");
@@ -31,9 +33,9 @@ public class LibrarySeleniumTest {
         driver.switchTo().alert().accept();
 
         // open main page manually if redirect not handled
-        driver.get("http://localhost:8081/index.html");
+        driver.get("http://localhost:8081/dashboard.html");
 
-        Thread.sleep(2000);
+        Thread.sleep(3000);
 
         // click show books button
         driver.findElement(By.xpath("//button[contains(text(),'Show Books')]")).click();
