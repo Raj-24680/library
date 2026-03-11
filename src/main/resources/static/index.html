@@ -35,6 +35,9 @@ name: document.getElementById("name").value,
 usn: document.getElementById("usn").value
 };
 
+/* Added line to store USN for dashboard */
+localStorage.setItem("usn", student.usn);
+
 fetch("/students/login",{
 method:"POST",
 headers:{

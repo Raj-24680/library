@@ -1,6 +1,8 @@
 package com.example.library;
 
 import com.example.library.model.Book;
+import com.example.library.model.IssueRecord;
+import com.example.library.repository.IssueRecordRepository;
 import com.example.library.service.BookService;
 
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,9 @@ public class BookServiceTest {
 
     @Autowired
     private BookService service;
+
+    @Autowired
+    private IssueRecordRepository issueRepository;
 
     // Test Add Book
     @Test
@@ -77,7 +82,7 @@ public class BookServiceTest {
         Book book = new Book("Issue Test","Author",5);
         Book saved = service.addBook(book);
 
-        Book issued = service.issueBook(saved.getId());
+        Book issued = service.issueBook(saved.getId(),"TESTUSN");
 
         assertEquals(4, issued.getQuantity());
     }
@@ -89,9 +94,14 @@ public class BookServiceTest {
         Book book = new Book("Return Test","Author",2);
         Book saved = service.addBook(book);
 
-        service.issueBook(saved.getId());
+        // Issue the book
+        service.issueBook(saved.getId(),"TESTUSN");
 
-        Book returned = service.returnBook(saved.getId());
+        // Get issued record
+        IssueRecord record = issueRepository.findAll().get(0);
+
+        // Return using record ID
+        Book returned = service.returnBook(record.getId());
 
         assertEquals(2, returned.getQuantity());
     }

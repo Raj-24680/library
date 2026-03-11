@@ -1,5 +1,7 @@
 package com.example.library.service;
-
+import com.example.library.model.IssueRecord;
+import com.example.library.repository.IssueRecordRepository;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,8 @@ public class BookService {
 
     @Autowired
     private BookRepository repository;
+    @Autowired
+    private IssueRecordRepository issueRepository;
 
     public List<Book> getAllBooks() {
         return repository.findAll();
@@ -35,22 +39,42 @@ public class BookService {
 
     return repository.save(book);
 }
-public Book issueBook(Long id) {
+public Book issueBook(Long id, String usn) {
+
     Book book = repository.findById(id).orElseThrow();
 
-    if (book.getQuantity() > 0) {
-        book.setQuantity(book.getQuantity() - 1);
-        return repository.save(book);
+    if (book.getQuantity() <= 0) {
+        throw new RuntimeException("Book not available");
     }
 
-    throw new RuntimeException("Book not available");
-}
-public Book returnBook(Long id) {
-    Book book = repository.findById(id).orElseThrow();
+    book.setQuantity(book.getQuantity() - 1);
 
-    book.setQuantity(book.getQuantity() + 1);
+    IssueRecord record = new IssueRecord(usn, book);
+    issueRepository.save(record);
 
     return repository.save(book);
 }
+public Book returnBook(Long recordId) {
 
+    IssueRecord record = issueRepository.findById(recordId).orElseThrow();
+
+    if (record.isReturned()) {
+        throw new RuntimeException("Book already returned");
+    }
+
+    Book book = record.getBook();
+
+    if (book.getQuantity() >= book.getTotalCopies()) {
+        throw new RuntimeException("All books already returned");
+    }
+
+    book.setQuantity(book.getQuantity() + 1);
+
+    record.setReturned(true);
+    record.setReturnDate(LocalDateTime.now());
+
+    issueRepository.save(record);
+
+    return repository.save(book);
+}
 }

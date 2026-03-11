@@ -13,6 +13,9 @@ public class Book {
     private String author;
     private int quantity;
 
+    // Added field to store maximum copies
+    private int totalCopies;
+
     // Default constructor
     public Book() {
     }
@@ -22,6 +25,7 @@ public class Book {
         this.title = title;
         this.author = author;
         this.quantity = quantity;
+        this.totalCopies = quantity; // set original quantity
     }
 
     // Getters
@@ -42,6 +46,10 @@ public class Book {
         return quantity;
     }
 
+    public int getTotalCopies() {
+        return totalCopies;
+    }
+
     // Setters
 
     public void setId(Long id) {
@@ -58,5 +66,9 @@ public class Book {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public void setTotalCopies(int totalCopies) {
+        this.totalCopies = totalCopies;
     }
 }

@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import com.example.library.model.Book;
+import com.example.library.model.IssueRecord;
+import com.example.library.repository.IssueRecordRepository;
 import com.example.library.service.BookService;
 
 @RestController
@@ -13,7 +15,8 @@ public class BookController {
 
     @Autowired
     private BookService service;
-
+    @Autowired
+    private IssueRecordRepository issueRepository;
     @GetMapping
     public List<Book> getBooks() {
         return service.getAllBooks();
@@ -32,12 +35,16 @@ public class BookController {
     public Book updateBook(@PathVariable Long id, @RequestBody Book book) {
     return service.updateBook(id, book);
 }
-@PutMapping("/issue/{id}")
-public Book issueBook(@PathVariable Long id) {
-    return service.issueBook(id);
+@PutMapping("/issue/{id}/{usn}")
+public Book issueBook(@PathVariable Long id, @PathVariable String usn) {
+    return service.issueBook(id, usn);
 }
-@PutMapping("/return/{id}")
-public Book returnBook(@PathVariable Long id) {
-    return service.returnBook(id);
+@PutMapping("/return/{recordId}")
+public Book returnBook(@PathVariable Long recordId) {
+    return service.returnBook(recordId);
+}
+@GetMapping("/issued")
+public List<IssueRecord> getIssuedBooks() {
+    return issueRepository.findAll();
 }
 }

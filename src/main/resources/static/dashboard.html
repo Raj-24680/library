@@ -38,22 +38,40 @@
 
 </div>
 
-<h3 class="mt-4">Available Books</h3>
+<!-- Available Books -->
+<h3 class="mt-4" id="availableTitle" style="display:none">Available Books</h3>
 
-<table class="table table-bordered table-striped mt-3">
+<table id="availableTable" class="table table-bordered table-striped mt-3" style="display:none">
 
 <thead class="table-dark">
-
 <tr>
 <th>ID</th>
 <th>Title</th>
 <th>Author</th>
 <th>Quantity</th>
 </tr>
-
 </thead>
 
 <tbody id="booksTable"></tbody>
+
+</table>
+
+<!-- Issued Books -->
+<h3 class="mt-4" id="issuedTitle" style="display:none">Issued Books</h3>
+
+<table id="issuedTableMain" class="table table-bordered table-striped mt-3" style="display:none">
+
+<thead class="table-dark">
+<tr>
+<th>Record ID</th>
+<th>Book Title</th>
+<th>Student USN</th>
+<th>Issue Time</th>
+<th>Return Time</th>
+</tr>
+</thead>
+
+<tbody id="issuedTable"></tbody>
 
 </table>
 
@@ -62,6 +80,12 @@
 <script>
 
 function loadBooks() {
+
+document.getElementById("availableTable").style.display = "table";
+document.getElementById("availableTitle").style.display = "block";
+
+document.getElementById("issuedTableMain").style.display = "none";
+document.getElementById("issuedTitle").style.display = "none";
 
 fetch("/books")
 .then(res => res.json())
@@ -88,25 +112,64 @@ document.getElementById("booksTable").innerHTML = rows;
 
 }
 
+function loadIssuedBooks() {
+
+document.getElementById("availableTable").style.display = "none";
+document.getElementById("availableTitle").style.display = "none";
+
+document.getElementById("issuedTableMain").style.display = "table";
+document.getElementById("issuedTitle").style.display = "block";
+
+fetch("/books/issued")
+.then(res => res.json())
+.then(data => {
+
+let rows = "";
+
+data.forEach(record => {
+
+rows += `
+<tr>
+<td>${record.id}</td>
+<td>${record.book.title}</td>
+<td>${record.usn || localStorage.getItem("usn")}</td>
+<td>${record.issueDate}</td>
+<td>${record.returnDate ?? "Not Returned"}</td>
+</tr>
+`;
+
+});
+
+document.getElementById("issuedTable").innerHTML = rows;
+
+});
+
+}
+
 function issueBook() {
 
 let id = document.getElementById("bookId").value;
+let usn = localStorage.getItem("usn");
 
-fetch(`/books/issue/${id}`,{
+fetch(`/books/issue/${id}/${usn}`,{
 method:"PUT"
 })
-.then(()=>loadBooks());
+.then(()=>{
+loadIssuedBooks();
+});
 
 }
 
 function returnBook() {
 
-let id = document.getElementById("bookId").value;
+let recordId = document.getElementById("bookId").value;
 
-fetch(`/books/return/${id}`,{
+fetch(`/books/return/${recordId}`,{
 method:"PUT"
 })
-.then(()=>loadBooks());
+.then(()=>{
+loadIssuedBooks();
+});
 
 }
 
