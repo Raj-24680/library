@@ -3,12 +3,6 @@ pipeline {
 
     stages {
 
-        stage('Start Podman') {
-            steps {
-                bat '"C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe" machine start'
-            }
-        }
-
         stage('Build & Package') {
             steps {
                 bat 'mvn clean package -DskipTests'
