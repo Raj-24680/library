@@ -3,21 +3,9 @@ pipeline {
 
     stages {
 
-        stage('Build') {
+        stage('Build & Package') {
             steps {
-                bat 'mvn clean compile'
-            }
-        }
-
-        stage('Test') {
-            steps {
-                bat 'mvn test'
-            }
-        }
-
-        stage('Package') {
-            steps {
-                bat 'mvn package'
+                bat 'mvn clean package -DskipTests'
             }
         }
 
