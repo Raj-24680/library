@@ -3,6 +3,12 @@ pipeline {
 
     stages {
 
+        stage('Start Podman') {
+            steps {
+                bat '"C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe" machine start'
+            }
+        }
+
         stage('Build & Package') {
             steps {
                 bat 'mvn clean package -DskipTests'
@@ -18,7 +24,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 bat '"C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe" rm -f library-app || true'
-                bat '"C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe" run -d -p 8081:8080 --name library-app library-app'
+                bat '"C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe" run -d -p 8081:8081 --name library-app library-app'
             }
         }
     }
