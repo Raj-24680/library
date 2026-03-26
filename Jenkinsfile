@@ -17,8 +17,9 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                bat 'podman rm -f library-app || true'
-                bat 'podman run -d -p 8081:8080 --name library-app library-app'
+                bat '"C:\\Program Files\\RedHat\\Podman\\podman.exe" build -t library-app .'
+bat '"C:\\Program Files\\RedHat\\Podman\\podman.exe" rm -f library-app || true'
+bat '"C:\\Program Files\\RedHat\\Podman\\podman.exe" run -d -p 8081:8080 --name library-app library-app'
             }
         }
     }
