@@ -3,15 +3,9 @@ pipeline {
 
     stages {
 
-        stage('Clone Code') {
-            steps {
-                git 'https://github.com/Raj-24680/library-management.git'
-            }
-        }
-
         stage('Build') {
             steps {
-                bat 'mvn clean package -DskipTests'
+                bat 'mvn clean compile'
             }
         }
 
@@ -21,19 +15,22 @@ pipeline {
             }
         }
 
+        stage('Package') {
+            steps {
+                bat 'mvn package'
+            }
+        }
+
         stage('Build Image') {
             steps {
-                bat 'podman build -t library-management .'
+                bat 'podman build -t library-app .'
             }
         }
 
         stage('Deploy') {
             steps {
-                bat '''
-                podman stop library || exit 0
-                podman rm library || exit 0
-                podman run -d -p 8081:8081 --name library library-management
-                '''
+                bat 'podman rm -f library-app || true'
+                bat 'podman run -d -p 8081:8080 --name library-app library-app'
             }
         }
     }
