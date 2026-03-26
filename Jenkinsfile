@@ -11,14 +11,14 @@ pipeline {
 
         stage('Build Image') {
             steps {
-                bat '"C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe" build -t library-app .'
+                bat 'docker build -t library-app .'
             }
         }
 
         stage('Deploy') {
             steps {
-                bat '"C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe" rm -f library-app || true'
-                bat '"C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe" run -d -p 8081:8081 --name library-app library-app'
+                bat 'docker rm -f library-app || true'
+                bat 'docker run -d -p 8081:8081 --name library-app library-app'
             }
         }
     }
