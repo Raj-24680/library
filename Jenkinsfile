@@ -25,11 +25,11 @@ pipeline {
             }
         }
 
-        stage('Build Image') {
-            steps {
-                bat 'set DOCKER_BUILDKIT=0 && docker build -t %IMAGE_NAME% .'
-            }
-        }
+       stage('Build Image') {
+    steps {
+        bat 'set DOCKER_BUILDKIT=0&& docker build -t %IMAGE_NAME% .'
+    }
+}
 
         stage('Deploy') {
             steps {
