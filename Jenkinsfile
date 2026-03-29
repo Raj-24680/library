@@ -27,12 +27,18 @@ pipeline {
                 bat 'mvn test'
             }
         }
-
-    stage('Build Image') {
+         stage('Start Podman') {
         steps {
-             bat '"C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe" build -t %IMAGE_NAME% .'
+            bat '"C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe" machine start'
     }
 }
+
+        stage('Build Image') {
+            steps {
+                bat '"C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe" build -t %IMAGE_NAME% .'
+    }
+}
+  
 
     stage('Deploy') {
         steps {
