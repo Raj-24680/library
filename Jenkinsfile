@@ -28,8 +28,11 @@ pipeline {
             }
         }
          stage('Start Podman') {
-        steps {
-            bat '"C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe" machine start'
+    steps {
+        bat '''
+        "C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe" machine init || exit 0
+        "C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe" machine start
+        '''
     }
 }
 
