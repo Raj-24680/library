@@ -3,7 +3,6 @@ pipeline {
 
     tools {
         maven 'Maven'
-        
     }
 
     environment {
@@ -12,9 +11,7 @@ pipeline {
         PORT = '8081'
     }
 
-    
-
-        
+    stages {
 
         stage('Build') {
             steps {
@@ -27,23 +24,21 @@ pipeline {
                 bat 'mvn test'
             }
         }
-       stage('Build Image') {
-    steps {
-        bat 'set DOCKER_BUILDKIT=0 && docker build -t %IMAGE_NAME% .'
-    }
-}
 
-        
-  
+        stage('Build Image') {
+            steps {
+                bat 'set DOCKER_BUILDKIT=0 && docker build -t %IMAGE_NAME% .'
+            }
+        }
 
-    stage('Deploy') {
-    steps {
-        bat '''
-        docker stop %CONTAINER_NAME% || exit 0
-        docker rm %CONTAINER_NAME% || exit 0
-        docker run -d -p %PORT%:8081 --name %CONTAINER_NAME% %IMAGE_NAME%
-        '''
-    }
-}
+        stage('Deploy') {
+            steps {
+                bat '''
+                docker stop %CONTAINER_NAME% || exit 0
+                docker rm %CONTAINER_NAME% || exit 0
+                docker run -d -p %PORT%:8081 --name %CONTAINER_NAME% %IMAGE_NAME%
+                '''
+            }
+        }
     }
 }
