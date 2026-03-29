@@ -12,7 +12,7 @@ pipeline {
         PORT = '8081'
     }
 
-    stages {
+    
 
         
 
@@ -27,9 +27,9 @@ pipeline {
                 bat 'mvn test'
             }
         }
-        stage('Build Image') {
+       stage('Build Image') {
     steps {
-        bat 'docker build -t %IMAGE_NAME% .'
+        bat 'set DOCKER_BUILDKIT=0 && docker build -t %IMAGE_NAME% .'
     }
 }
 
