@@ -28,20 +28,20 @@ pipeline {
             }
         }
 
-        stage('Build Image') {
-            steps {
-                bat 'podman build -t %IMAGE_NAME% .'
-            }
-        }
+    stage('Build Image') {
+        steps {
+             bat '"C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe" build -t %IMAGE_NAME% .'
+    }
+}
 
-        stage('Deploy') {
-            steps {
-                bat '''
-                podman stop %CONTAINER_NAME% || exit 0
-                podman rm %CONTAINER_NAME% || exit 0
-                podman run -d -p %PORT%:8081 --name %CONTAINER_NAME% %IMAGE_NAME%
-                '''
-            }
-        }
+    stage('Deploy') {
+        steps {
+            bat '''
+            "C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe" stop %CONTAINER_NAME% || exit 0
+            "C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe" rm %CONTAINER_NAME% || exit 0
+            "C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe" run -d -p %PORT%:8081 --name %CONTAINER_NAME% %IMAGE_NAME%
+            '''
+    }
+}
     }
 }
