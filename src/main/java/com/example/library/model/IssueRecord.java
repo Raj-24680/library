@@ -34,7 +34,8 @@ public class IssueRecord {
         return id;
     }
 
-    public String getStudentUsn() {
+    // ✅ FIXED GETTER (IMPORTANT)
+    public String getUsn() {
         return studentUsn;
     }
 

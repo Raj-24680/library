@@ -3,9 +3,7 @@
 <head>
 <title>Library Management System</title>
 
-<!-- Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
 </head>
 
 <body class="bg-light">
@@ -42,7 +40,6 @@
 <h3 class="mt-4" id="availableTitle" style="display:none">Available Books</h3>
 
 <table id="availableTable" class="table table-bordered table-striped mt-3" style="display:none">
-
 <thead class="table-dark">
 <tr>
 <th>ID</th>
@@ -51,16 +48,13 @@
 <th>Quantity</th>
 </tr>
 </thead>
-
 <tbody id="booksTable"></tbody>
-
 </table>
 
 <!-- Issued Books -->
 <h3 class="mt-4" id="issuedTitle" style="display:none">Issued Books</h3>
 
 <table id="issuedTableMain" class="table table-bordered table-striped mt-3" style="display:none">
-
 <thead class="table-dark">
 <tr>
 <th>Record ID</th>
@@ -70,107 +64,113 @@
 <th>Return Time</th>
 </tr>
 </thead>
-
 <tbody id="issuedTable"></tbody>
-
 </table>
 
 </div>
 
 <script>
 
+// 🔥 SHOW AVAILABLE BOOKS
 function loadBooks() {
 
-document.getElementById("availableTable").style.display = "table";
-document.getElementById("availableTitle").style.display = "block";
+    document.getElementById("availableTable").style.display = "table";
+    document.getElementById("availableTitle").style.display = "block";
 
-document.getElementById("issuedTableMain").style.display = "none";
-document.getElementById("issuedTitle").style.display = "none";
+    document.getElementById("issuedTableMain").style.display = "none";
+    document.getElementById("issuedTitle").style.display = "none";
 
-fetch("/books")
-.then(res => res.json())
-.then(data => {
+    fetch("/books")
+    .then(res => res.json())
+    .then(data => {
 
-let rows = "";
+        let rows = "";
 
-data.forEach(book => {
+        data.forEach(book => {
+            rows += `
+            <tr>
+            <td>${book.id}</td>
+            <td>${book.title}</td>
+            <td>${book.author}</td>
+            <td>${book.quantity}</td>
+            </tr>
+            `;
+        });
 
-rows += `
-<tr>
-<td>${book.id}</td>
-<td>${book.title}</td>
-<td>${book.author}</td>
-<td>${book.quantity}</td>
-</tr>
-`;
-
-});
-
-document.getElementById("booksTable").innerHTML = rows;
-
-});
-
+        document.getElementById("booksTable").innerHTML = rows;
+    });
 }
 
+
+// 🔥 SHOW ISSUED BOOKS
 function loadIssuedBooks() {
 
-document.getElementById("availableTable").style.display = "none";
-document.getElementById("availableTitle").style.display = "none";
+    document.getElementById("issuedTableMain").style.display = "table";
+    document.getElementById("issuedTitle").style.display = "block";
 
-document.getElementById("issuedTableMain").style.display = "table";
-document.getElementById("issuedTitle").style.display = "block";
+    document.getElementById("availableTable").style.display = "none";
+    document.getElementById("availableTitle").style.display = "none";
 
-fetch("/books/issued")
-.then(res => res.json())
-.then(data => {
+    fetch("/books/issued")
+    .then(res => res.json())
+    .then(data => {
 
-let rows = "";
+        let rows = "";
 
-data.forEach(record => {
+        data.forEach(record => {
 
-rows += `
-<tr>
-<td>${record.id}</td>
-<td>${record.book.title}</td>
-<td>${record.usn || localStorage.getItem("usn")}</td>
-<td>${record.issueDate}</td>
-<td>${record.returnDate ?? "Not Returned"}</td>
-</tr>
-`;
+            rows += `
+            <tr>
+            <td>${record.id}</td>
+            <td>${record.book ? record.book.title : "N/A"}</td>
+            <td>${record.usn || "N/A"}</td>
+            <td>${record.issueDate}</td>
+            <td>${record.returnDate ? record.returnDate : "Not Returned"}</td>
+            </tr>
+            `;
+        });
 
-});
-
-document.getElementById("issuedTable").innerHTML = rows;
-
-});
-
+        document.getElementById("issuedTable").innerHTML = rows;
+    });
 }
 
+
+// 🔥 ISSUE BOOK
 function issueBook() {
 
-let id = document.getElementById("bookId").value;
-let usn = localStorage.getItem("usn");
+    let id = document.getElementById("bookId").value;
+    let usn = localStorage.getItem("usn");
 
-fetch(`/books/issue/${id}/${usn}`,{
-method:"PUT"
-})
-.then(()=>{
-loadIssuedBooks();
-});
+    if(!id || !usn){
+        alert("Enter Book ID and login first!");
+        return;
+    }
 
+    fetch(`/books/issue/${id}/${usn}`, {
+        method: "PUT"
+    })
+    .then(() => {
+        loadIssuedBooks();   // ✅ ONLY issued table
+    });
 }
 
+
+// 🔥 RETURN BOOK
 function returnBook() {
 
-let recordId = document.getElementById("bookId").value;
+    let recordId = document.getElementById("bookId").value;
 
-fetch(`/books/return/${recordId}`,{
-method:"PUT"
-})
-.then(()=>{
-loadIssuedBooks();
-});
+    if(!recordId){
+        alert("Enter Record ID!");
+        return;
+    }
 
+    fetch(`/books/return/${recordId}`,{
+        method:"PUT"
+    })
+    .then(()=>{
+        loadIssuedBooks();   // ✅ ONLY issued table
+    });
 }
 
 </script>
