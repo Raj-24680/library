@@ -14,11 +14,7 @@ pipeline {
 
     stages {
 
-        stage('Clone') {
-            steps {
-                git 'https://github.com/Raj-24680/library.git'
-            }
-        }
+        
 
         stage('Build') {
             steps {
