@@ -25,7 +25,7 @@ pipeline {
             }
         }
 
-       stage('Build Image') {
+      stage('Build Image') {
     steps {
         bat 'set DOCKER_BUILDKIT=0&& docker build -t %IMAGE_NAME% .'
     }
