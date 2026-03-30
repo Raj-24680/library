@@ -26,15 +26,6 @@ pipeline {
             }
         }
 
-        stage('Start Podman') {
-            steps {
-                bat '''
-                "%PODMAN%" machine init || echo already initialized
-                "%PODMAN%" machine start || echo already running
-                '''
-            }
-        }
-
         stage('Build Image') {
             steps {
                 bat '"%PODMAN%" build -t %IMAGE_NAME% .'
