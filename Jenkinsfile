@@ -9,7 +9,6 @@ pipeline {
         IMAGE_NAME = 'library-management'
         CONTAINER_NAME = 'library-app'
         PORT = '8081'
-        PODMAN = 'C:\\Users\\rahul\\AppData\\Local\\Programs\\Podman\\podman.exe'
     }
 
     stages {
@@ -26,20 +25,20 @@ pipeline {
             }
         }
 
-        stage('Build Image') {
-            steps {
-                bat '"%PODMAN%" build -t %IMAGE_NAME% .'
-            }
-        }
+      stage('Build Image') {
+    steps {
+        bat 'set DOCKER_BUILDKIT=0&& docker build -t %IMAGE_NAME% .'
+    }
+}
 
         stage('Deploy') {
             steps {
                 bat '''
-                "%PODMAN%" stop %CONTAINER_NAME% || echo not running
-                "%PODMAN%" rm %CONTAINER_NAME% || echo not exist
-                "%PODMAN%" run -d -p %PORT%:8081 --name %CONTAINER_NAME% %IMAGE_NAME%
+                docker stop %CONTAINER_NAME% || exit 0
+                docker rm %CONTAINER_NAME% || exit 0
+                docker run -d -p %PORT%:8081 --name %CONTAINER_NAME% %IMAGE_NAME%
                 '''
             }
         }
     }
-}
+} 
